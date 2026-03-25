@@ -19,4 +19,4 @@ jobs:
     - name: Run system
       env:
         ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-      run: python main.py
+      - run: pip install requests numpy pandas scikit-learn
