@@ -4,5 +4,4 @@ def kelly(prob, odds):
 
     kelly_fraction = (b * prob - q) / b
 
-    # proteger bankroll (usar solo fracción)
-    return max(0, min(kelly_fraction, 0.05))  # max 5%
+    return max(0, min(kelly_fraction, 0.05))
