@@ -1,30 +1,33 @@
+def calculate_ev(prob, odds):
+    return (prob * odds) - 1
+
+
 def find_value(pred, odds):
     value_bets = []
 
-    for key in pred:
-        if key not in odds or odds[key] is None:
+    for market in pred:
+
+        if market not in odds or odds[market] is None:
             continue
 
-        prob = pred[key]
-        odd = odds[key]
-        implied = 1 / odd
-        edge = prob - implied
+        prob = pred[market]
+        odd = odds[market]
 
-        if prob < 0.60:
+        ev = calculate_ev(prob, odd)
+
+        # 🔥 FILTROS PROFESIONALES
+        if prob < 0.55:
             continue
 
-        if edge < 0.07:
-            continue
-
-        if key not in ["over_2_5", "under_3_5", "home_win"]:
+        if ev < 0.05:  # mínimo 5% EV
             continue
 
         value_bets.append({
-            "market": key,
-            "prob": round(prob, 2),
+            "market": market,
+            "prob": round(prob, 3),
             "odds": odd,
-            "edge": round(edge, 2),
-            "score": round(prob * edge, 3)
+            "ev": round(ev, 3),
+            "score": round(ev * prob, 4)
         })
 
     value_bets = sorted(value_bets, key=lambda x: x["score"], reverse=True)
