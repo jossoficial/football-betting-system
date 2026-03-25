@@ -1,12 +1,13 @@
 from understat_scraper import get_understat_data
 from odds_api import get_odds
-from model import predict_match
+from model import predict_match, combine_models
 from value import find_value
 from parlay import build_parlays
 from bankroll import kelly
-from tracker import calculate_roi
+from ml_model import train_model, predict_ml
+from features import build_features
 
-BANKROLL = 1000  # dinero inicial
+BANKROLL = 1000
 
 def match_teams(teams, odds_matches):
     paired = []
@@ -31,18 +32,30 @@ def main():
     teams = get_understat_data()
     odds_matches = get_odds()
 
+    ml_model = train_model()
+
     games = match_teams(teams, odds_matches)
 
     all_values = []
 
-    print("\n🏦 HEDGE FUND MODE 🏦\n")
+    print("\n🤖 SISTEMA IA PROFESIONAL 🤖\n")
 
     for home, away, odds in games:
-        pred = predict_match(home["xg"], away["xg"])
+
+        features = build_features(home, away)
+        ml_prob = predict_ml(ml_model, features)
+
+        poisson = predict_match(home["xg"], away["xg"])
+        combined = combine_models(poisson["home_win"], ml_prob)
+
+        pred = {
+            "home_win": combined,
+            "over_2_5": poisson["over_2_5"],
+            "under_3_5": poisson["under_3_5"]
+        }
 
         odds_map = {
             "home_win": odds["odds"].get(home["team"]),
-            "away_win": odds["odds"].get(away["team"]),
             "over_2_5": odds["over"],
             "under_3_5": odds["under"]
         }
@@ -57,7 +70,7 @@ def main():
 
     parlays = build_parlays(all_values)
 
-    print("🎯 PICKS + GESTIÓN DE BANCA:\n")
+    print("🎯 PICKS OPTIMIZADOS:\n")
 
     for p in parlays:
         pick = p["pick"]
@@ -69,10 +82,7 @@ def main():
         print(f"- {pick['market']}")
         print(f"  cuota: {pick['odds']}")
         print(f"  prob: {pick['prob']}")
-        print(f"  stake recomendado: ${stake} ({round(stake_pct*100,2)}%)\n")
-
-    roi = calculate_roi()
-    print(f"\n📈 ROI HISTÓRICO: {roi}%\n")
+        print(f"  stake: ${stake}\n")
 
 
 if __name__ == "__main__":
