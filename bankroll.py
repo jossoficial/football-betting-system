@@ -2,6 +2,7 @@ def kelly(prob, odds):
     b = odds - 1
     q = 1 - prob
 
-    kelly_fraction = (b * prob - q) / b
+    k = (b * prob - q) / b
 
-    return max(0, min(kelly_fraction, 0.05))
+    # 🔥 CONTROL PROFESIONAL
+    return max(0, min(k, 0.03))  # máximo 3%
