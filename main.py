@@ -1,35 +1,70 @@
 from understat_scraper import get_understat_data
-from model import match_prediction
-from value import find_value_bets
+from odds_api import get_odds
+from model import predict_match
+from value import find_value
+from parlay import build_parlays
 
-def create_matches(teams):
-    matches = []
+def match_teams(teams, odds_matches):
+    paired = []
 
-    for i in range(0, len(teams)-1, 2):
-        matches.append((teams[i], teams[i+1]))
+    for o in odds_matches:
+        home = None
+        away = None
 
-    return matches
+        for t in teams:
+            if t["team"] in o["home"]:
+                home = t
+            if t["team"] in o["away"]:
+                away = t
+
+        if home and away:
+            paired.append((home, away, o))
+
+    return paired
 
 
 def main():
     teams = get_understat_data()
-    matches = create_matches(teams)
+    odds_matches = get_odds()
 
-    print("\n🔥 ANALISIS PROFESIONAL 🔥\n")
+    games = match_teams(teams, odds_matches)
 
-    for home, away in matches:
-        pred = match_prediction(home["xg"], away["xg"])
-        values = find_value_bets(pred)
+    all_values = []
 
-        print(f"{home['team']} vs {away['team']}")
-        print("Probabilidades:", pred)
+    print("\n🔥 SISTEMA ELITE 🔥\n")
+
+    for home, away, odds in games:
+        pred = predict_match(home["xg"], away["xg"])
+
+        odds_map = {
+            "home_win": odds["odds"].get(home["team"]),
+            "away_win": odds["odds"].get(away["team"]),
+            "over_2_5": odds["over"],
+            "under_3_5": odds["under"]
+        }
+
+        values = find_value(pred, odds_map)
 
         if values:
-            print("💰 VALUE BETS:")
-            for v in values:
-                print(f"- {v['market']} (prob: {v['prob']} vs cuota: {v['odds']})")
+            all_values.append({
+                "match": f"{home['team']} vs {away['team']}",
+                "values": values
+            })
 
-        print("\n----------------------\n")
+            print(f"{home['team']} vs {away['team']}")
+            for v in values:
+                print(f"- {v['market']} | prob: {v['prob']} | cuota: {v['odds']} | edge: {v['edge']}")
+            print()
+
+    parlays = build_parlays(all_values)
+
+    print("\n🎯 PARLAYS ELITE:\n")
+
+    for p in parlays:
+        print(p["match"])
+        for pick in p["picks"]:
+            print(f"- {pick['market']} ({pick['odds']})")
+        print()
 
 
 if __name__ == "__main__":
