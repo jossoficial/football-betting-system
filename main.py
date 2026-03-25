@@ -58,14 +58,10 @@ def main():
 
     parlays = build_parlays(all_values)
 
-    print("\n🎯 PARLAYS ELITE:\n")
+    print("\n🎯 PARLAY ULTRA ELITE:\n")
 
     for p in parlays:
+        pick = p["pick"]
         print(p["match"])
-        for pick in p["picks"]:
-            print(f"- {pick['market']} ({pick['odds']})")
+        print(f"- {pick['market']} | cuota: {pick['odds']} | prob: {pick['prob']}")
         print()
-
-
-if __name__ == "__main__":
-    main()
