@@ -1,9 +1,7 @@
-name: Elite Betting System
+name: AI Betting System
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 12 * * *'
 
 jobs:
   run:
@@ -16,7 +14,7 @@ jobs:
       with:
         python-version: '3.10'
 
-    - run: pip install requests numpy
+    - run: pip install requests numpy pandas scikit-learn
 
     - name: Run system
       env:
