@@ -4,6 +4,6 @@ def build_features(home, away):
         away["xg"],
         home["xga"],
         away["xga"],
-        home["xg"] - away["xga"],  # ataque vs defensa
+        home["xg"] - away["xga"],
         away["xg"] - home["xga"],
     ]
