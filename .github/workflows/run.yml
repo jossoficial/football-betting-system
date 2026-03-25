@@ -1,25 +1,21 @@
-name: Run Betting System
+name: Betting AI Pro
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * *'  # corre diario (puedes cambiar hora)
+    - cron: '0 12 * * *'
 
 jobs:
-  run-script:
+  run:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar repo
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-    - name: Instalar Python
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Instalar dependencias
-      run: pip install pandas
+    - run: pip install requests numpy pandas
 
-    - name: Ejecutar script
-      run: python main.py
+    - run: python main.py
