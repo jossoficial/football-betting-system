@@ -1,9 +1,9 @@
-name: AI Betting System
+name: AI Betting System Elite
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 12 * * *'  # corre diario (puedes cambiar hora)
 
 jobs:
   run:
@@ -39,7 +39,6 @@ jobs:
         ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
       run: python main.py
 
-    # 🔥 PARTE CLAVE (GUARDAR DATOS)
     - name: Commit and push data
       run: |
         git config --global user.name "bot"
