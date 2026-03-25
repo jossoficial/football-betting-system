@@ -12,7 +12,6 @@ def train_model():
 
     return model
 
-
 def predict_ml(model, features):
     prob = model.predict_proba([features])[0][1]
     return prob
