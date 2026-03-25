@@ -4,12 +4,15 @@ def select_best_markets(pred, roi_data):
     for market, prob in pred.items():
         roi = roi_data.get(market, 0)
 
-        # solo mercados rentables históricamente
-        if roi > 0.05 and prob > 0.6:
+        # 🔥 DOBLE FILTRO (CLAVE)
+        if prob > 0.55 and roi > 0:
             selected.append({
                 "market": market,
                 "prob": prob,
-                "roi": roi
+                "roi": roi,
+                "score": prob * (1 + roi)
             })
 
-    return selected
+    selected = sorted(selected, key=lambda x: x["score"], reverse=True)
+
+    return selected[:2]  # máximo 2 picks por partido
