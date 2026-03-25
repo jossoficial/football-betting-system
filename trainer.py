@@ -1,14 +1,18 @@
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier
+from historical_data import load_historical_data, build_training_dataset
 
 def train_model():
-    df = pd.read_csv("storage/matches.csv")
 
-    if len(df) < 10:
+    # 🔥 cargar data masiva
+    raw_df = load_historical_data()
+    df = build_training_dataset(raw_df)
+
+    if len(df) < 50:
         return None
 
-    X = df[["home_xg","away_xg"]]
-    y = (df["home_xg"] > df["away_xg"]).astype(int)
+    X = df.drop("result", axis=1)
+    y = df["result"]
 
     model = GradientBoostingClassifier()
     model.fit(X, y)
