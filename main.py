@@ -85,5 +85,7 @@ def main():
         print(f"  stake: ${stake}\n")
 
 
+from pipeline import run_pipeline
+
 if __name__ == "__main__":
-    main()
+    run_pipeline()
