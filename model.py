@@ -25,3 +25,6 @@ def predict_match(home_xg, away_xg):
         "over_2_5": over_25,
         "under_3_5": under_35
     }
+
+def combine_models(poisson_prob, ml_prob):
+    return (poisson_prob * 0.6) + (ml_prob * 0.4)
