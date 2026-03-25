@@ -10,14 +10,12 @@ def find_value(pred, odds):
         implied = 1 / odd
         edge = prob - implied
 
-        # 🔥 FILTROS ELITE
         if prob < 0.60:
             continue
 
         if edge < 0.07:
             continue
 
-        # mercados más estables
         if key not in ["over_2_5", "under_3_5", "home_win"]:
             continue
 
@@ -26,10 +24,9 @@ def find_value(pred, odds):
             "prob": round(prob, 2),
             "odds": odd,
             "edge": round(edge, 2),
-            "score": round(prob * edge, 3)  # 🔥 ranking interno
+            "score": round(prob * edge, 3)
         })
 
-    # ordenar por calidad
     value_bets = sorted(value_bets, key=lambda x: x["score"], reverse=True)
 
     return value_bets
